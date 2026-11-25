@@ -1,0 +1,201 @@
+/* ============================================================
+ *  theme.css — ธีมกลางของระบบการเงินและเอกสาร PTU
+ *  ยึดชุดสีของ index.html เป็นมาตรฐาน แล้วทับสีของ app.html ให้ตรงกัน
+ *  ไฟล์นี้โหลดอัตโนมัติจาก gsrun.js ไม่ต้องแก้ app.html
+ *
+ *  ชุดสีมาตรฐาน
+ *    #0B1F45  น้ำเงินเข้ม   แถบหัว ท้ายหน้า พื้นเข้ม
+ *    #143C78  น้ำเงินกลาง   ปุ่มหลัก ตัวเลขขั้นที่ผ่านแล้ว
+ *    #F26A21  ส้ม           ปุ่มเน้น ขั้นที่กำลังทำอยู่
+ *    #F4F7FB  พื้นหลังหน้า
+ *    #E3EAF4  เส้นขอบการ์ด
+ *    #13213D  ตัวอักษรหลัก
+ *    #5C6F8C  ตัวอักษรรอง
+ *  สีเขียว (emerald) และแดงคงไว้ เพราะสื่อความหมายสำเร็จ/ผิดพลาด
+ * ============================================================ */
+
+:root {
+  --ptu-navy: #0B1F45;
+  --ptu-blue: #143C78;
+  --ptu-orange: #F26A21;
+  --ptu-bg: #F4F7FB;
+  --ptu-line: #E3EAF4;
+  --ptu-text: #13213D;
+  --ptu-muted: #5C6F8C;
+}
+
+body { background: var(--ptu-bg) !important; color: var(--ptu-text) !important; }
+
+/* ---------- พื้นเข้ม: แถบหัว ท้ายหน้า ---------- */
+.bg-\[\#1e3a8a\],
+.bg-slate-950,
+.bg-slate-900      { background-color: var(--ptu-navy) !important; }
+
+/* ---------- ปุ่มหลักและพื้นน้ำเงิน ---------- */
+.bg-blue-900,
+.bg-blue-800,
+.bg-slate-800      { background-color: var(--ptu-blue) !important; }
+.hover\:bg-blue-900:hover,
+.hover\:bg-blue-800:hover { background-color: var(--ptu-navy) !important; }
+
+/* ---------- ตัวอักษร ---------- */
+.text-blue-950     { color: var(--ptu-text) !important; }
+.text-blue-900,
+.text-blue-800     { color: var(--ptu-blue) !important; }
+.text-slate-500,
+.text-slate-600,
+.text-slate-700    { color: var(--ptu-muted) !important; }
+.text-slate-400,
+.text-slate-300    { color: #8DA0BC !important; }
+.text-slate-800    { color: var(--ptu-text) !important; }
+
+/* ---------- เส้นขอบและพื้นอ่อน ---------- */
+.border-slate-200,
+.border-slate-300  { border-color: var(--ptu-line) !important; }
+.bg-slate-50,
+.bg-slate-100      { background-color: var(--ptu-bg) !important; }
+.ring-blue-800     { --tw-ring-color: var(--ptu-blue) !important; }
+
+/* ---------- สีเน้น: เหลืองทอง -> ส้ม ---------- */
+.bg-amber-400,
+.bg-amber-500      { background-color: var(--ptu-orange) !important; color: #fff !important; }
+.hover\:bg-amber-500:hover { background-color: #D85A14 !important; }
+.text-amber-800    { color: #9A4410 !important; }
+.bg-amber-50       { background-color: #FFF4EC !important; }
+.border-amber-200,
+.border-amber-300  { border-color: #FBD9C2 !important; }
+
+/* ---------- แถบบอกขั้นตอน ---------- */
+.step-item.step-active .step-circle,
+.step-icon.step-active .step-circle {
+  background: var(--ptu-orange) !important;
+  border-color: var(--ptu-orange) !important;
+  color: #fff !important;
+}
+.step-item.step-done .step-circle,
+.step-icon.step-done .step-circle {
+  background: var(--ptu-blue) !important;
+  border-color: var(--ptu-blue) !important;
+  color: #fff !important;
+}
+.step-item.step-active .step-label { color: var(--ptu-orange) !important; }
+.step-item.step-done .step-label   { color: var(--ptu-blue) !important; }
+.step-line { background: var(--ptu-line) !important; }
+
+/* ---------- เมนูที่เลือกอยู่ ---------- */
+.nav-active { background-color: #EDF2F9 !important; color: var(--ptu-blue) !important; }
+
+/* ============================================================
+ *  เต็มหน้าจอ + ตัวอักษรใหญ่ อ่านง่ายสำหรับผู้สูงอายุ
+ *  ใช้เฉพาะการแสดงบนจอ (@media screen) ไม่กระทบการสั่งพิมพ์
+ *  ไม่ใช้ zoom เพราะทำให้ html2canvas จับภาพใบเสร็จเพี้ยน
+ * ============================================================ */
+@media screen {
+
+  /* ระยะขอบซ้ายขวาตามขนาดจอ: มือถือ 16px ถึงจอใหญ่ 64px */
+  :root { --gutter: clamp(16px, 4vw, 64px); }
+
+  /* ---------- ขนาดตัวอักษรฐาน (app.html ใช้หน่วย rem ของ Tailwind) ---------- */
+  html { font-size: 106.25%; }                         /* มือถือ 17px */
+
+  /* ---------- เต็มจอ: index.html ---------- */
+  main { max-width: none !important; width: 100% !important;
+         padding-left: var(--gutter) !important; padding-right: var(--gutter) !important; }
+  header, footer { padding-left: var(--gutter) !important; padding-right: var(--gutter) !important; }
+
+  /* ---------- เต็มจอ: docs.html ---------- */
+  .wrap { max-width: none !important; width: 100% !important;
+          padding-left: var(--gutter) !important; padding-right: var(--gutter) !important; }
+
+  /* ---------- เต็มจอ: app.html (การ์ดเล็ก เช่น เข้าสู่ระบบ ป๊อปอัป คงขนาดเดิม) ---------- */
+  .max-w-7xl, .max-w-4xl, .max-w-3xl, .max-w-2xl { max-width: none !important; }
+  .max-w-7xl { padding-left: var(--gutter) !important; padding-right: var(--gutter) !important; box-sizing: border-box !important; }
+
+  /* ---------- app.html: ตัวอักษรเล็กจิ๋วที่กำหนดเป็น px ---------- */
+  .text-\[8px\], .text-\[9px\], .text-\[10px\] { font-size: 13px !important; }
+  .text-\[11px\], .text-\[12px\]               { font-size: 14px !important; }
+  .step-label                                  { font-size: 13px !important; }
+
+  /* app.html แถบบน: บล็อกโลโก้เดิมห้ามหด (shrink-0) เลยดันปุ่ม ☰ กับ Admin ออกนอกจอบนมือถือ
+     ให้หดได้ แล้วชื่อระบบจะถูกตัดด้วย … ตามคลาส truncate ที่แอปใส่ไว้แล้ว */
+  nav .cursor-pointer.min-w-0 { flex-shrink: 1 !important; }
+  /* ตัวอักษร PTU จาง ๆ ตกแต่งในการ์ดยอดค่าเทอม ไม่ให้ยื่นออกนอกจอ */
+  div:has(> .text-8xl.pointer-events-none) { overflow: hidden !important; }
+  /* ตัวอักษรขนาด text-xs ของ Tailwind ไม่ให้เล็กกว่า 13.5px */
+  .text-xs { font-size: 13.5px !important; }
+
+  /* ---------- index.html: ตัวอักษร ---------- */
+  .brand span { font-size: 16px !important; }
+  .admin      { font-size: 15px !important; }
+  .hero h1    { font-size: 26px !important; }
+  .step b     { font-size: 13px !important; }
+  .step em    { font-size: 14px !important; }
+  .badge      { font-size: 16px !important; }
+  .lead h2    { font-size: 22px !important; }
+  .lead p     { font-size: 15.5px !important; }
+  .tile .tx b { font-size: 20px !important; }
+  .row .tx b  { font-size: 17.5px !important; }
+  .tx span    { font-size: 15px !important; }
+  .sect b     { font-size: 15px !important; }
+  footer b    { font-size: 15px !important; }
+  footer span { font-size: 13px !important; }
+
+  /* ---------- docs.html: ตัวอักษร + สีหัวข้อในแถบบน ---------- */
+  header b                 { font-size: 17px !important; color: #fff !important; }
+  header small             { font-size: 14px !important; }
+  header a[href="index.html"]:not([title]), header button { font-size: 15px !important; }
+  .wrap h1                 { font-size: 23px !important; }
+  .wrap label              { font-size: 15.5px !important; }
+  .wrap input, .wrap select, .wrap textarea { font-size: 17px !important; }
+  .wrap button             { font-size: 17px !important; }
+  .wrap button.sm          { font-size: 15px !important; }
+  .wrap .mute, .wrap .note { font-size: 15px !important; }
+  .wrap .chip              { font-size: 13.5px !important; }
+  .wrap table              { font-size: 15px !important; }
+  .wrap th                 { font-size: 14px !important; }
+  .wrap .msg, .msg         { font-size: 15.5px !important; }
+  #vLogin                  { max-width: 640px; width: 100%; margin-left: auto; margin-right: auto; }
+}
+
+/* ---------- จอคอม ---------- */
+@media screen and (min-width: 1000px) {
+  html { font-size: 118.75%; }                         /* 19px */
+
+  .text-\[8px\], .text-\[9px\], .text-\[10px\] { font-size: 14px !important; }
+  .text-\[11px\], .text-\[12px\]               { font-size: 15px !important; }
+  .step-label                                  { font-size: 14.5px !important; }
+  .text-xs                                     { font-size: 14.5px !important; }
+
+  .brand span { font-size: 17px !important; }
+  .hero h1    { font-size: 38px !important; }
+  .step em    { font-size: 16px !important; }
+  .step b     { font-size: 14px !important; }
+  .badge      { font-size: 17px !important; }
+  .lead h2    { font-size: 30px !important; }
+  .lead p     { font-size: 17px !important; }
+  .duo .tile .tx b    { font-size: 25px !important; }
+  .duo .tile .tx span { font-size: 17px !important; }
+  .trio .row .tx b    { font-size: 19px !important; }
+  .tx span    { font-size: 15.5px !important; }
+  .sect b     { font-size: 17px !important; }
+  footer span { font-size: 14.5px !important; }
+
+  header b                 { font-size: 19px !important; }
+  header a[href="index.html"]:not([title]), header button { font-size: 16px !important; }
+  .wrap h1                 { font-size: 26px !important; }
+  .wrap label              { font-size: 17px !important; }
+  .wrap input, .wrap select, .wrap textarea { font-size: 18px !important; }
+  .wrap button             { font-size: 18px !important; }
+  .wrap .mute, .wrap .note { font-size: 16px !important; }
+  .wrap table              { font-size: 16px !important; }
+  .wrap .msg, .msg         { font-size: 16.5px !important; }
+
+  /* docs.html หลังเข้าสู่ระบบ: ส่งเอกสารใหม่ กับ รายการที่ส่งแล้ว อยู่ข้างกัน */
+  #vDocs:not(.hide) { display: grid !important; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 16px; }
+  #vDocs > .card:first-child { grid-column: 1 / -1; }
+}
+
+/* ---------- จอใหญ่ ---------- */
+@media screen and (min-width: 1600px) {
+  html { font-size: 125%; }                            /* 20px */
+}
