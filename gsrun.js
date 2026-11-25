@@ -50,18 +50,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
 /* ====== เปิดตรงขั้นที่ต้องการด้วย ?step=reg|link|pay|balance ======
    ปุ่มในหน้าแรกชี้มาที่ไฟล์เด้ง ซึ่งแนบค่า step มาให้แล้ว
-   รอจน switchTab พร้อมใช้งานก่อนจึงสั่งสลับ เพราะสคริปต์ของแอปโหลดทีหลัง */
+   สคริปต์ของแอปโหลดทีหลัง จึงต้องรอจน switchTab พร้อมก่อนจึงสั่งสลับ
+   และต้องยกเลิกทันทีที่ผู้ใช้แตะอะไรก็ตาม ไม่งั้นจะไปสลับทับสิ่งที่ผู้ใช้เพิ่งกด
+   (เช่น กด Admin แล้วโดนเด้งกลับไปหน้าส่งสลิป) */
 document.addEventListener("DOMContentLoaded", function () {
   var step = new URLSearchParams(location.search).get("step");
   var allow = { reg: 1, link: 1, pay: 1, balance: 1 };
   if (!step || !allow[step]) return;
+
+  var cancelled = false;
+  var timer = null;
+
+  function stop() {
+    cancelled = true;
+    if (timer) { clearInterval(timer); timer = null; }
+    document.removeEventListener("pointerdown", stop, true);
+    document.removeEventListener("keydown", stop, true);
+  }
+
+  // ผู้ใช้แตะหรือกดคีย์เมื่อไหร่ ถือว่าเขาเลือกเองแล้ว เลิกสลับอัตโนมัติ
+  document.addEventListener("pointerdown", stop, true);
+  document.addEventListener("keydown", stop, true);
+
   var tries = 0;
-  var timer = setInterval(function () {
+  timer = setInterval(function () {
+    if (cancelled) return;
     if (typeof switchTab === "function") {
-      clearInterval(timer);
+      stop();
       switchTab(step);
-    } else if (++tries > 40) {
-      clearInterval(timer);
+    } else if (++tries > 60) {
+      stop();
     }
-  }, 50);
+  }, 30);
 });

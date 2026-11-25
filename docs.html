@@ -74,15 +74,26 @@ font-size:13px;line-height:1.75;color:#8A4A1C}
 .hide{display:none}
 a{color:#1A50A8}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.thumbs{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.thumbs figure{margin:0;position:relative}
+.thumbs img{width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid #CBD6E6;display:block}
+.thumbs button{position:absolute;top:-7px;right:-7px;width:23px;height:23px;line-height:1;padding:0;
+border:none;border-radius:50%;background:#B91C1C;color:#fff;font-size:14px;font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
 <header>
-  <div class="row" style="gap:12px">
+  <a class="row" href="index.html" title="กลับหน้าหลัก"
+     style="gap:12px;text-decoration:none;color:inherit;cursor:pointer">
     <img src="logo.png" onerror="this.src='https://drive.google.com/thumbnail?id=1D1CdQEUDwdPV2b1bmudXnJgcJPyI_6jj&sz=w400'" alt="ตราสัญลักษณ์มหาวิทยาลัยปทุมธานี" style="height:44px;width:auto;border-radius:6px">
     <div><b>ส่งเอกสารหลักฐาน</b><br><small>ระบบการเงินและเอกสาร PTU</small></div>
+  </a>
+  <div class="row">
+    <a href="index.html" class="sm alt"
+       style="background:transparent;color:var(--gold);border:1px solid #2A4878;border-radius:9px;padding:7px 13px;text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap">&#8249; หน้าหลัก</a>
+    <small id="who"></small>
+    <button id="out" class="sm alt hide" style="background:transparent;color:var(--gold);border-color:#2A4878">ออกจากระบบ</button>
   </div>
-  <div class="row"><small id="who"></small><button id="out" class="sm alt hide" style="background:transparent;color:var(--gold);border-color:#2A4878">ออกจากระบบ</button></div>
 </header>
 
 <div class="wrap">
@@ -125,9 +136,10 @@ a{color:#1A50A8}
     <b>ส่งเอกสารใหม่</b>
     <label>ประเภทเอกสาร</label>
     <select id="dType"></select>
-    <label>ไฟล์ภาพ (JPG / PNG / WebP ไม่เกิน 5 MB)</label>
-    <input id="file" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onchange="pick(this)">
-    <img id="prev" alt="ตัวอย่างเอกสารที่จะส่ง">
+    <label>ไฟล์ภาพ (JPG / PNG / WebP ไม่เกิน 5 MB ต่อไฟล์)</label>
+    <input id="file" type="file" accept="image/jpeg,image/png,image/webp" multiple onchange="pick(this)">
+    <p class="mute">เลือกได้ครั้งละไม่เกิน 5 ไฟล์ ทุกไฟล์จะถูกบันทึกเป็นเอกสารประเภทที่เลือกไว้ด้านบน</p>
+    <div id="prevs" class="thumbs"></div>
     <p class="mute">ระบบย่อภาพเหลือด้านยาว 1600 px ลบข้อมูลพิกัดถ่ายภาพ และฝังลายน้ำ “ใช้สำหรับสมัครเรียน ม.ปทุมธานี เท่านั้น” ลงในภาพถาวรก่อนส่ง</p>
     <button id="btnUp" onclick="upload()" disabled>ส่งเอกสาร</button>
   </div>
@@ -153,7 +165,7 @@ a{color:#1A50A8}
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbxVD47cLabkuZlfe2T8d31S-Cfo8j84f1eBBVYE61NaCPPn97bfvMx2ZOG9tn7QmLOdkg/exec";
-let TK = "", TYPES = [], IMG = "", BY_GUARD = false;
+let TK = "", TYPES = [], IMGS = [], BY_GUARD = false;
 
 const $ = id => document.getElementById(id);
 const say = (t, ok) => { const m=$("msg"); m.textContent=t; m.className="msg "+(ok?"ok":"err"); window.scrollTo(0,0); };
@@ -194,37 +206,93 @@ async function listDocs(){
     </div>`).join("") : `<p class="mute">ยังไม่มีเอกสาร</p>`;
 }
 
-/* ย่อ + ลบ EXIF + ฝังลายน้ำ ด้วย canvas */
-function pick(inp){
-  const f = inp.files[0]; if(!f) return;
-  if(f.size > 15*1024*1024) return say("ไฟล์ใหญ่เกินไป");
-  const img = new Image(), fr = new FileReader();
-  fr.onload = e => img.src = e.target.result;
-  img.onload = () => {
-    const sc = Math.min(1, 1600/Math.max(img.width, img.height));
-    const c = document.createElement("canvas");
-    c.width = img.width*sc; c.height = img.height*sc;
-    const x = c.getContext("2d");
-    x.drawImage(img, 0, 0, c.width, c.height);
-    const d = new Date().toLocaleDateString("th-TH");
-    x.save(); x.translate(c.width/2, c.height/2); x.rotate(-27*Math.PI/180);
-    x.font = "bold " + Math.round(c.width/22) + "px Sarabun, sans-serif";
-    x.fillStyle = "rgba(15,42,92,.30)"; x.textAlign = "center";
-    ["ใช้สำหรับสมัครเรียน","ม.ปทุมธานี เท่านั้น", d].forEach((t,i)=>x.fillText(t, 0, (i-1)*c.width/16));
-    x.restore();
-    IMG = c.toDataURL("image/jpeg", .82);
-    $("prev").src = IMG; $("prev").style.display = "block"; $("btnUp").disabled = false;
-  };
-  fr.readAsDataURL(f);
+/* ย่อ + ลบ EXIF + ฝังลายน้ำ ด้วย canvas — รองรับหลายไฟล์ต่อครั้ง */
+const MAX_FILES = 5;
+
+function prepare(f){
+  return new Promise((resolve, reject) => {
+    if(f.size > 15*1024*1024) return reject(new Error(f.name + " ใหญ่เกินไป"));
+    const img = new Image(), fr = new FileReader();
+    fr.onerror = () => reject(new Error("อ่านไฟล์ " + f.name + " ไม่สำเร็จ"));
+    fr.onload = e => img.src = e.target.result;
+    img.onerror = () => reject(new Error(f.name + " ไม่ใช่ไฟล์ภาพที่เปิดได้"));
+    img.onload = () => {
+      const sc = Math.min(1, 1600/Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = img.width*sc; c.height = img.height*sc;
+      const x = c.getContext("2d");
+      x.drawImage(img, 0, 0, c.width, c.height);
+      const d = new Date().toLocaleDateString("th-TH");
+      x.save(); x.translate(c.width/2, c.height/2); x.rotate(-27*Math.PI/180);
+      x.font = "bold " + Math.round(c.width/22) + "px Sarabun, sans-serif";
+      x.fillStyle = "rgba(15,42,92,.30)"; x.textAlign = "center";
+      ["ใช้สำหรับสมัครเรียน","ม.ปทุมธานี เท่านั้น", d].forEach((t,i)=>x.fillText(t, 0, (i-1)*c.width/16));
+      x.restore();
+      resolve(c.toDataURL("image/jpeg", .82));
+    };
+    fr.readAsDataURL(f);
+  });
+}
+
+function drawPrevs(){
+  $("prevs").innerHTML = IMGS.map((d,i) =>
+    '<figure><img src="' + d + '" alt="เอกสารที่จะส่ง ลำดับ ' + (i+1) + '">' +
+    '<button type="button" title="เอาออก" onclick="dropFile(' + i + ')">&times;</button></figure>'
+  ).join("");
+  $("btnUp").disabled = IMGS.length === 0;
+  $("btnUp").textContent = IMGS.length > 1
+    ? "ส่งเอกสาร " + IMGS.length + " ไฟล์"
+    : "ส่งเอกสาร";
+}
+
+function dropFile(i){
+  IMGS.splice(i, 1);
+  drawPrevs();
+}
+
+async function pick(inp){
+  const files = Array.from(inp.files || []);
+  if(!files.length) return;
+  if(files.length > MAX_FILES){
+    inp.value = "";
+    return say("เลือกได้ครั้งละไม่เกิน " + MAX_FILES + " ไฟล์ กรุณาเลือกใหม่");
+  }
+  IMGS = [];
+  drawPrevs();
+  for(const f of files){
+    try { IMGS.push(await prepare(f)); }
+    catch(e){ say(e.message); }
+  }
+  drawPrevs();
 }
 
 async function upload(){
-  if(!IMG) return say("กรุณาเลือกไฟล์ภาพ");
-  $("btnUp").disabled = true;
-  const r = await api("upload", {token:TK, type:$("dType").value, data:IMG});
-  if(!r.ok){ $("btnUp").disabled=false; return say(r.msg); }
-  IMG=""; $("file").value=""; $("prev").style.display="none";
-  say(r.msg, 1); listDocs();
+  if(!IMGS.length) return say("กรุณาเลือกไฟล์ภาพ");
+  const btn = $("btnUp"), label = btn.textContent;
+  btn.disabled = true;
+
+  let done = 0;
+  const failed = [];
+
+  for(let i = 0; i < IMGS.length; i++){
+    btn.textContent = "กำลังส่ง " + (i+1) + " / " + IMGS.length + " …";
+    const r = await api("upload", {token:TK, type:$("dType").value, data:IMGS[i]});
+    if(r.ok){ done++; } else { failed.push("ไฟล์ที่ " + (i+1) + ": " + r.msg); }
+  }
+
+  btn.textContent = label;
+  IMGS = [];
+  $("file").value = "";
+  drawPrevs();
+  listDocs();
+
+  if(!failed.length){
+    say("ส่งเอกสารเรียบร้อยแล้ว " + done + " ไฟล์", 1);
+  } else if(done){
+    say("ส่งสำเร็จ " + done + " ไฟล์<br>ไม่สำเร็จ " + failed.length + " ไฟล์<br>" + failed.join("<br>"));
+  } else {
+    say(failed.join("<br>"));
+  }
 }
 
 async function view(id){
