@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ส่งเอกสารหลักฐาน · ระบบการเงินและเอกสาร PTU</title>
+<link rel="icon" href="logo.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B1F45">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:Sarabun,system-ui,sans-serif;background:#F4F7FB;color:#13213D}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes grow{from{width:0}}
+.u{animation:up .6s cubic-bezier(.2,.8,.3,1) both}
+
+header{background:#0B1F45;padding:14px 20px;display:flex;flex-wrap:wrap;gap:10px;
+justify-content:space-between;align-items:center}
+header b{font-size:15.5px}
+header small{color:#9FB6D8}
+
+.wrap{max-width:720px;margin:0 auto;padding:20px 18px 32px;display:flex;flex-direction:column;gap:16px}
+.card{background:#fff;border:2px solid #E3EAF4;border-radius:18px;padding:18px;
+box-shadow:0 12px 26px -24px rgba(14,42,92,.6)}
+h1{font-size:20px;margin:0 0 6px}
+
+label{display:block;font-size:13.5px;font-weight:700;margin:14px 0 6px}
+input,select,textarea{width:100%;font-family:inherit;font-size:16px;padding:14px;
+border:2px solid #E3EAF4;border-radius:14px;background:#fff;color:#13213D}
+input:focus,select:focus{outline:none;border-color:#F26A21}
+
+button{font-family:inherit;font-size:15.5px;font-weight:700;border:none;border-radius:14px;padding:15px 20px;
+color:#fff;background:linear-gradient(150deg,#F58A4B,#E25513);cursor:pointer;
+box-shadow:0 12px 24px -14px rgba(226,85,19,.9);
+transition:transform .2s cubic-bezier(.2,.8,.3,1),box-shadow .2s}
+button:hover{transform:translateY(-3px);box-shadow:0 18px 30px -16px rgba(226,85,19,.85)}
+button:active{transform:translateY(0) scale(.99)}
+button.alt{background:#EDF2F9;color:#13213D;border:2px solid #E3EAF4;box-shadow:none}
+button.alt:hover{border-color:#F26A21;box-shadow:0 14px 24px -20px rgba(14,42,92,.6)}
+button.sm{font-size:13px;padding:10px 15px}
+
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.tabs{display:flex;gap:8px;margin-bottom:4px}
+.tabs button{flex:1;background:#EDF2F9;color:#5C6F8C;border:2px solid #E3EAF4;box-shadow:none}
+.tabs button.on{background:#0B1F45;color:#fff;border-color:#0B1F45}
+.mute{color:#5C6F8C;font-size:13px;line-height:1.75}
+
+.chip{font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;display:inline-block;
+background:#E6F7EE;color:#117A45;border:1px solid #B9E7CE}
+.chip.w{background:#FFF4EC;color:#B4600C;border-color:#FBD9C2}
+.chip.r{background:#FFF0EA;color:#B4341A;border-color:#FBC9B0}
+
+.item{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:14px 0;border-top:1px solid #EDF2F9}
+.item:first-child{border-top:none}
+.grow{flex:1 1 200px;min-width:0}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:#F1F5FB;text-align:left;padding:12px;font-size:12px;font-weight:700;color:#6F819C;white-space:nowrap}
+td{padding:10px 12px;border-top:1px solid #EDF2F9;vertical-align:middle}
+tbody tr{transition:background .16s}
+tbody tr:hover{background:#F7FAFE}
+td[contenteditable]{outline:none;min-width:80px;border-radius:7px}
+td[contenteditable]:focus{background:#FFF4EC;box-shadow:inset 0 0 0 2px #F26A21}
+.scroll{overflow-x:auto}
+
+.msg{padding:13px 15px;border-radius:12px;font-size:14px;line-height:1.6;display:none;font-weight:600}
+.msg.ok{display:block;background:#E6F7EE;color:#117A45;border:1px solid #B9E7CE}
+.msg.err{display:block;background:#FFF0EA;color:#B4341A;border:1px solid #FBC9B0}
+.note{background:#FFF7F1;border:1px solid #FBD9C2;border-radius:12px;padding:13px 15px;
+font-size:13px;line-height:1.75;color:#8A4A1C}
+#prev{max-width:100%;border-radius:12px;display:none;margin-top:12px}
+.hide{display:none}
+a{color:#1A50A8}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.thumbs{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.thumbs figure{margin:0;position:relative}
+.thumbs img{width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid #CBD6E6;display:block}
+.thumbs button{position:absolute;top:-7px;right:-7px;width:23px;height:23px;line-height:1;padding:0;
+border:none;border-radius:50%;background:#B91C1C;color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+  <a class="row" href="index.html" title="กลับหน้าหลัก"
+     style="gap:12px;text-decoration:none;color:inherit;cursor:pointer">
+    <img src="logo.png" onerror="this.src='https://drive.google.com/thumbnail?id=1D1CdQEUDwdPV2b1bmudXnJgcJPyI_6jj&sz=w400'" alt="ตราสัญลักษณ์มหาวิทยาลัยปทุมธานี" style="height:44px;width:auto;border-radius:6px">
+    <div><b>ส่งเอกสารหลักฐาน</b><br><small>ระบบการเงินและเอกสาร PTU</small></div>
+  </a>
+  <div class="row">
+    <a href="index.html" class="sm alt"
+       style="background:transparent;color:#F9B382;border:1px solid #2A4878;border-radius:9px;padding:7px 13px;text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap">&#8249; หน้าหลัก</a>
+    <small id="who"></small>
+    <button id="out" class="sm alt hide" style="background:transparent;color:#F9B382;border-color:#2A4878">ออกจากระบบ</button>
+  </div>
+</header>
+
+<div class="wrap">
+<div id="msg" class="msg"></div>
+
+<!-- เข้าสู่ระบบ -->
+<div id="vLogin" class="card">
+  <img src="logo.png" onerror="this.src='https://drive.google.com/thumbnail?id=1D1CdQEUDwdPV2b1bmudXnJgcJPyI_6jj&sz=w400'" alt="" style="display:block;max-width:220px;width:60%;margin:0 auto 18px">
+  <h1>เข้าสู่ระบบ</h1>
+  <p class="mute">กรอกข้อมูลให้ตรงกับที่ลงทะเบียนไว้ เพื่อเปิดเอกสารของผู้สมัครรายนั้นเท่านั้น</p>
+  <div class="tabs">
+    <button id="tSelf" class="on" onclick="mode(0)">นักศึกษา</button>
+    <button id="tGuard" onclick="mode(1)">ผู้ปกครองทำแทน</button>
+  </div>
+  <label>รหัสนักศึกษา <span class="mute">(ยังไม่ได้รับรหัส — เว้นว่าง)</span></label>
+  <input id="sid" placeholder="เช่น 6701234567">
+  <label>ชื่อ-นามสกุลผู้สมัคร</label>
+  <input id="name" placeholder="ชื่อ นามสกุล">
+  <label>เบอร์โทรศัพท์ผู้สมัคร 4 ตัวท้าย</label>
+  <input id="tel4" maxlength="4" inputmode="numeric" style="max-width:150px;letter-spacing:8px;font-size:19px">
+  <div id="gBox" class="hide">
+    <label>ชื่อ-นามสกุลผู้ปกครองที่ทำแทน</label>
+    <input id="gName">
+    <label>ความสัมพันธ์กับผู้สมัคร</label>
+    <select id="gRel"><option>บิดา</option><option>มารดา</option><option>ผู้ปกครอง</option><option>ญาติ</option><option>อื่นๆ</option></select>
+  </div>
+  <p class="mute" style="margin:14px 0">ยินยอมให้มหาวิทยาลัยจัดเก็บและใช้สำเนาเอกสารเพื่อการรับเข้าศึกษาและนำส่งข้อมูลทางการศึกษา เก็บไม่เกิน 1 ปีหลังสิ้นสุดการรับสมัคร</p>
+  <div class="row"><button onclick="login()">เข้าสู่ระบบ</button></div>
+  <p class="mute">กรอกไม่ตรงเกิน 5 ครั้ง ระบบล็อก 15 นาที</p>
+</div>
+
+<!-- เอกสารของฉัน -->
+<div id="vDocs" class="hide">
+  <div class="card">
+    <h1>เอกสารของฉัน</h1>
+    <p class="mute" id="stuInfo"></p>
+    <div class="note">อัปโหลดแล้วใช้งานได้ทันที ไม่ต้องรออนุมัติ · เอกสารที่ส่งแล้วลบหรือแก้ไขไม่ได้ หากเจ้าหน้าที่ขอฉบับใหม่ ให้อัปโหลดเพิ่ม ระบบเก็บทุกฉบับเป็นประวัติและใช้ฉบับล่าสุด</div>
+  </div>
+  <div class="card">
+    <b>ส่งเอกสารใหม่</b>
+    <label>ประเภทเอกสาร</label>
+    <select id="dType"></select>
+    <label>ไฟล์ภาพ (JPG / PNG / WebP ไม่เกิน 5 MB ต่อไฟล์)</label>
+    <input id="file" type="file" accept="image/jpeg,image/png,image/webp" multiple onchange="pick(this)">
+    <p class="mute">เลือกได้ครั้งละไม่เกิน 5 ไฟล์ ทุกไฟล์จะถูกบันทึกเป็นเอกสารประเภทที่เลือกไว้ด้านบน</p>
+    <div id="prevs" class="thumbs"></div>
+    <p class="mute">ระบบย่อภาพเหลือด้านยาว 1600 px ลบข้อมูลพิกัดถ่ายภาพ และฝังลายน้ำ “ใช้สำหรับสมัครเรียน ม.ปทุมธานี เท่านั้น” ลงในภาพถาวรก่อนส่ง</p>
+    <button id="btnUp" onclick="upload()" disabled>ส่งเอกสาร</button>
+  </div>
+  <div class="card"><b>รายการที่ส่งแล้ว</b><div id="docList"></div></div>
+</div>
+
+<!-- เจ้าหน้าที่ -->
+<div id="vAdmin" class="card hide">
+  <h1>เจ้าหน้าที่</h1>
+  <label>Username</label><input id="aUser">
+  <label>Password</label><input id="aPass" type="password">
+  <div class="row" style="margin-top:14px"><button onclick="aLogin()">เข้าสู่ระบบ</button><button class="alt" onclick="show('vLogin')">ย้อนกลับ</button></div>
+</div>
+
+<div id="vReg" class="hide">
+  <div class="card">
+    <h1>ทะเบียนเอกสารหลักฐาน</h1>
+    <p class="mute">คลิกในช่องเพื่อแก้ไขได้ทันที (รหัสนักศึกษา · ชื่อ-สกุล · ประเภทเอกสาร · ผู้อัปโหลด · ความสัมพันธ์ · สถานะ · หมายเหตุ) กด Tab หรือคลิกออกเพื่อบันทึก · ทุกการเปิดดู ดาวน์โหลด และแก้ไข บันทึกลง Audit_Log</p>
+  </div>
+  <div class="card scroll"><table id="regTable"></table></div>
+</div>
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbxVD47cLabkuZlfe2T8d31S-Cfo8j84f1eBBVYE61NaCPPn97bfvMx2ZOG9tn7QmLOdkg/exec";
+let TK = "", TYPES = [], IMGS = [], BY_GUARD = false;
+
+const $ = id => document.getElementById(id);
+const say = (t, ok) => { const m=$("msg"); m.textContent=t; m.className="msg "+(ok?"ok":"err"); window.scrollTo(0,0); };
+const show = v => { ["vLogin","vDocs","vAdmin","vReg"].forEach(x=>$(x).classList.toggle("hide", x!==v)); };
+const mode = g => { BY_GUARD=!!g; $("tSelf").classList.toggle("on",!g); $("tGuard").classList.toggle("on",!!g); $("gBox").classList.toggle("hide",!g); };
+
+async function api(action, payload){
+  try{
+    const r = await fetch(API, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body: JSON.stringify({action, payload:payload||{}})});
+    return await r.json();
+  }catch(e){ return {ok:false, msg:"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้"}; }
+}
+
+/* ---- นักศึกษา ---- */
+async function login(){
+  const r = await api("login", {sid:$("sid").value, name:$("name").value, tel4:$("tel4").value,
+    byGuardian:BY_GUARD, gName:$("gName").value, gRel:$("gRel").value});
+  if(!r.ok) return say(r.msg);
+  TK = r.token; TYPES = [];
+  $("who").textContent = r.student.name + " · " + r.student.sid;
+  $("out").classList.remove("hide");
+  $("stuInfo").textContent = r.student.name+" · "+r.student.sid+" · "+r.student.fac+" / "+r.student.major
+    + (BY_GUARD ? " · ผู้ส่งเอกสาร: "+r.uploader+" ("+r.rel+")" : "");
+  say("เข้าสู่ระบบสำเร็จ", 1); show("vDocs"); listDocs();
+}
+
+async function listDocs(){
+  const r = await api("list", {token:TK});
+  if(!r.ok) return say(r.msg);
+  if(!TYPES.length){ TYPES=r.types; $("dType").innerHTML = TYPES.map(t=>`<option>${t}</option>`).join(""); }
+  $("docList").innerHTML = r.docs.length ? r.docs.map(d=>`
+    <div class="item">
+      <div class="grow"><b>${d.type}</b><div class="mute">${d.at} · ${d.kb} KB · ส่งโดย ${d.uploader} (${d.rel})
+      ${d.note?`<br><span style="color:#B91C1C">${d.note}</span>`:""}</div></div>
+      <span class="chip ${d.status==="ขอเอกสารใหม่"?"r":(d.status==="ส่งแล้ว"?"":"w")}">${d.status}</span>
+      <button class="sm alt" onclick="view('${d.id}')">ดูเอกสาร</button>
+    </div>`).join("") : `<p class="mute">ยังไม่มีเอกสาร</p>`;
+}
+
+/* ย่อ + ลบ EXIF + ฝังลายน้ำ ด้วย canvas — รองรับหลายไฟล์ต่อครั้ง */
+const MAX_FILES = 5;
+
+function prepare(f){
+  return new Promise((resolve, reject) => {
+    if(f.size > 15*1024*1024) return reject(new Error(f.name + " ใหญ่เกินไป"));
+    const img = new Image(), fr = new FileReader();
+    fr.onerror = () => reject(new Error("อ่านไฟล์ " + f.name + " ไม่สำเร็จ"));
+    fr.onload = e => img.src = e.target.result;
+    img.onerror = () => reject(new Error(f.name + " ไม่ใช่ไฟล์ภาพที่เปิดได้"));
+    img.onload = () => {
+      const sc = Math.min(1, 1600/Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = img.width*sc; c.height = img.height*sc;
+      const x = c.getContext("2d");
+      x.drawImage(img, 0, 0, c.width, c.height);
+      const d = new Date().toLocaleDateString("th-TH");
+      x.save(); x.translate(c.width/2, c.height/2); x.rotate(-27*Math.PI/180);
+      x.font = "bold " + Math.round(c.width/22) + "px Sarabun, sans-serif";
+      x.fillStyle = "rgba(15,42,92,.30)"; x.textAlign = "center";
+      ["ใช้สำหรับสมัครเรียน","ม.ปทุมธานี เท่านั้น", d].forEach((t,i)=>x.fillText(t, 0, (i-1)*c.width/16));
+      x.restore();
+      resolve(c.toDataURL("image/jpeg", .82));
+    };
+    fr.readAsDataURL(f);
+  });
+}
+
+function drawPrevs(){
+  $("prevs").innerHTML = IMGS.map((d,i) =>
+    '<figure><img src="' + d + '" alt="เอกสารที่จะส่ง ลำดับ ' + (i+1) + '">' +
+    '<button type="button" title="เอาออก" onclick="dropFile(' + i + ')">&times;</button></figure>'
+  ).join("");
+  $("btnUp").disabled = IMGS.length === 0;
+  $("btnUp").textContent = IMGS.length > 1
+    ? "ส่งเอกสาร " + IMGS.length + " ไฟล์"
+    : "ส่งเอกสาร";
+}
+
+function dropFile(i){
+  IMGS.splice(i, 1);
+  drawPrevs();
+}
+
+async function pick(inp){
+  const files = Array.from(inp.files || []);
+  if(!files.length) return;
+  if(files.length > MAX_FILES){
+    inp.value = "";
+    return say("เลือกได้ครั้งละไม่เกิน " + MAX_FILES + " ไฟล์ กรุณาเลือกใหม่");
+  }
+  IMGS = [];
+  drawPrevs();
+  for(const f of files){
+    try { IMGS.push(await prepare(f)); }
+    catch(e){ say(e.message); }
+  }
+  drawPrevs();
+}
+
+async function upload(){
+  if(!IMGS.length) return say("กรุณาเลือกไฟล์ภาพ");
+  const btn = $("btnUp"), label = btn.textContent;
+  btn.disabled = true;
+
+  let done = 0;
+  const failed = [];
+
+  for(let i = 0; i < IMGS.length; i++){
+    btn.textContent = "กำลังส่ง " + (i+1) + " / " + IMGS.length + " …";
+    const r = await api("upload", {token:TK, type:$("dType").value, data:IMGS[i]});
+    if(r.ok){ done++; } else { failed.push("ไฟล์ที่ " + (i+1) + ": " + r.msg); }
+  }
+
+  btn.textContent = label;
+  IMGS = [];
+  $("file").value = "";
+  drawPrevs();
+  listDocs();
+
+  if(!failed.length){
+    say("ส่งเอกสารเรียบร้อยแล้ว " + done + " ไฟล์", 1);
+  } else if(done){
+    say("ส่งสำเร็จ " + done + " ไฟล์<br>ไม่สำเร็จ " + failed.length + " ไฟล์<br>" + failed.join("<br>"));
+  } else {
+    say(failed.join("<br>"));
+  }
+}
+
+async function view(id){
+  const r = await api("img", {token:TK, id});
+  if(!r.ok) return say(r.msg);
+  const a = document.createElement("a");
+  a.href = r.data; a.download = r.name; a.click();
+}
+
+/* ---- เจ้าหน้าที่ ---- */
+async function aLogin(){
+  const r = await api("aLogin", {user:$("aUser").value, pass:$("aPass").value});
+  if(!r.ok) return say(r.msg);
+  TK = r.token; $("who").textContent = r.name; $("out").classList.remove("hide");
+  say("เข้าสู่ระบบสำเร็จ", 1); show("vReg"); aList();
+}
+
+const EDIT = ["รหัสนักศึกษา","ชื่อ-สกุล","ประเภทเอกสาร","ผู้อัปโหลด","ความสัมพันธ์","สถานะ","หมายเหตุ"];
+async function aList(){
+  const r = await api("aList", {token:TK});
+  if(!r.ok) return say(r.msg);
+  const cols = [["รหัสเอกสาร","id"],["รหัสนักศึกษา","sid"],["ชื่อ-สกุล","name"],["ประเภทเอกสาร","type"],
+    ["ผู้อัปโหลด","uploader"],["ความสัมพันธ์","rel"],["ขนาด(KB)","kb"],["วันที่อัปโหลด","at"],
+    ["สถานะ","status"],["หมายเหตุ","note"]];
+  $("regTable").innerHTML =
+    "<thead><tr>" + cols.map(c=>`<th>${c[0]}</th>`).join("") + "<th>เอกสาร</th></tr></thead><tbody>" +
+    r.docs.map(d => "<tr>" + cols.map(c => {
+      const ed = EDIT.includes(c[0]);
+      return `<td ${ed?`contenteditable data-row="${d.row}" data-f="${c[0]}" onblur="save(this)"`:""}>${d[c[1]]||""}</td>`;
+    }).join("") + `<td><button class="sm alt" onclick="view('${d.id}')">ดาวน์โหลด</button></td></tr>`).join("") +
+    "</tbody>";
+}
+
+async function save(td){
+  const r = await api("aSave", {token:TK, row:td.dataset.row, field:td.dataset.f, value:td.textContent.trim()});
+  say(r.msg || "บันทึกไม่สำเร็จ", r.ok);
+}
+
+$("out").onclick = () => { TK=""; $("who").textContent=""; $("out").classList.add("hide"); show("vLogin"); };
+
+if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js"));
+</script>
+</body>
+</html>

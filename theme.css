@@ -1,0 +1,86 @@
+/* ============================================================
+ *  theme.css — ธีมกลางของระบบการเงินและเอกสาร PTU
+ *  ยึดชุดสีของ index.html เป็นมาตรฐาน แล้วทับสีของ app.html ให้ตรงกัน
+ *  ไฟล์นี้โหลดอัตโนมัติจาก gsrun.js ไม่ต้องแก้ app.html
+ *
+ *  ชุดสีมาตรฐาน
+ *    #0B1F45  น้ำเงินเข้ม   แถบหัว ท้ายหน้า พื้นเข้ม
+ *    #143C78  น้ำเงินกลาง   ปุ่มหลัก ตัวเลขขั้นที่ผ่านแล้ว
+ *    #F26A21  ส้ม           ปุ่มเน้น ขั้นที่กำลังทำอยู่
+ *    #F4F7FB  พื้นหลังหน้า
+ *    #E3EAF4  เส้นขอบการ์ด
+ *    #13213D  ตัวอักษรหลัก
+ *    #5C6F8C  ตัวอักษรรอง
+ *  สีเขียว (emerald) และแดงคงไว้ เพราะสื่อความหมายสำเร็จ/ผิดพลาด
+ * ============================================================ */
+
+:root {
+  --ptu-navy: #0B1F45;
+  --ptu-blue: #143C78;
+  --ptu-orange: #F26A21;
+  --ptu-bg: #F4F7FB;
+  --ptu-line: #E3EAF4;
+  --ptu-text: #13213D;
+  --ptu-muted: #5C6F8C;
+}
+
+body { background: var(--ptu-bg) !important; color: var(--ptu-text) !important; }
+
+/* ---------- พื้นเข้ม: แถบหัว ท้ายหน้า ---------- */
+.bg-\[\#1e3a8a\],
+.bg-slate-950,
+.bg-slate-900      { background-color: var(--ptu-navy) !important; }
+
+/* ---------- ปุ่มหลักและพื้นน้ำเงิน ---------- */
+.bg-blue-900,
+.bg-blue-800,
+.bg-slate-800      { background-color: var(--ptu-blue) !important; }
+.hover\:bg-blue-900:hover,
+.hover\:bg-blue-800:hover { background-color: var(--ptu-navy) !important; }
+
+/* ---------- ตัวอักษร ---------- */
+.text-blue-950     { color: var(--ptu-text) !important; }
+.text-blue-900,
+.text-blue-800     { color: var(--ptu-blue) !important; }
+.text-slate-500,
+.text-slate-600,
+.text-slate-700    { color: var(--ptu-muted) !important; }
+.text-slate-400,
+.text-slate-300    { color: #8DA0BC !important; }
+.text-slate-800    { color: var(--ptu-text) !important; }
+
+/* ---------- เส้นขอบและพื้นอ่อน ---------- */
+.border-slate-200,
+.border-slate-300  { border-color: var(--ptu-line) !important; }
+.bg-slate-50,
+.bg-slate-100      { background-color: var(--ptu-bg) !important; }
+.ring-blue-800     { --tw-ring-color: var(--ptu-blue) !important; }
+
+/* ---------- สีเน้น: เหลืองทอง -> ส้ม ---------- */
+.bg-amber-400,
+.bg-amber-500      { background-color: var(--ptu-orange) !important; color: #fff !important; }
+.hover\:bg-amber-500:hover { background-color: #D85A14 !important; }
+.text-amber-800    { color: #9A4410 !important; }
+.bg-amber-50       { background-color: #FFF4EC !important; }
+.border-amber-200,
+.border-amber-300  { border-color: #FBD9C2 !important; }
+
+/* ---------- แถบบอกขั้นตอน ---------- */
+.step-item.step-active .step-circle,
+.step-icon.step-active .step-circle {
+  background: var(--ptu-orange) !important;
+  border-color: var(--ptu-orange) !important;
+  color: #fff !important;
+}
+.step-item.step-done .step-circle,
+.step-icon.step-done .step-circle {
+  background: var(--ptu-blue) !important;
+  border-color: var(--ptu-blue) !important;
+  color: #fff !important;
+}
+.step-item.step-active .step-label { color: var(--ptu-orange) !important; }
+.step-item.step-done .step-label   { color: var(--ptu-blue) !important; }
+.step-line { background: var(--ptu-line) !important; }
+
+/* ---------- เมนูที่เลือกอยู่ ---------- */
+.nav-active { background-color: #EDF2F9 !important; color: var(--ptu-blue) !important; }
