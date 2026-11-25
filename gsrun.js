@@ -42,16 +42,23 @@
   window.google.script.host = { close: function () {}, setHeight: function () {}, origin: location.origin, editor: { focus: function () {} } };
 })();
 
-/* ====== คลิกโลโก้หรือชื่อระบบ แล้วกลับหน้าหลัก index.html ====== */
+/* ====== คลิกโลโก้หรือชื่อระบบ (ทั้งบล็อก) แล้วกลับหน้าหลัก index.html ======
+   ใน app.html บล็อกโลโก้+ชื่อระบบมี onclick="switchTab('reg')" ติดมาเดิม
+   จึงต้องหาบล็อกนั้นทั้งก้อน แล้วถอด onclick เดิมออกก่อน ไม่งั้นคลิกตัวหนังสือจะไปขั้นที่ 1 */
 document.addEventListener("DOMContentLoaded", function () {
   var nav = document.querySelector("nav");
   if (!nav) return;
   var logo = nav.querySelector("img");
-  var brand = logo ? logo.parentElement : nav.firstElementChild;
-  if (!brand) return;
+  if (!logo) return;
+  var brand = logo.closest("[onclick]") || logo.parentElement.parentElement || logo.parentElement;
+  if (!brand || brand === nav) return;
+  brand.removeAttribute("onclick");
+  brand.onclick = null;
   brand.style.cursor = "pointer";
   brand.title = "กลับหน้าหลัก";
-  brand.addEventListener("click", function () {
+  brand.addEventListener("click", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
     location.href = "index.html";
   });
 });
