@@ -1,6 +1,7 @@
 // Service Worker ขั้นต่ำที่ทำให้ติดตั้งเป็นแอปได้ — ไม่แคชข้อมูลเอกสารและไม่แคช API
-const CACHE = "ptu-v2";
-const SHELL = ["./", "./index.html", "./docs.html", "./manifest.json"];
+const CACHE = "ptu-v3";
+const SHELL = ["./", "./index.html", "./docs.html", "./pay.html", "./register.html",
+  "./linkid.html", "./check.html", "./app.css", "./app.js", "./manifest.json"];
 
 self.addEventListener("install", e => {
   e.waitUntil(

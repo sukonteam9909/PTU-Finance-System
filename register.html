@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ลงทะเบียนนักศึกษาใหม่ · PTU</title>
+<link rel="icon" href="logo.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B1F45">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<header>
+  <a class="back" href="./" aria-label="กลับหน้าแรก">&#8249;</a>
+  <h1>ลงทะเบียนนักศึกษาใหม่</h1>
+</header>
+
+<main>
+  <div id="msg" class="msg"></div>
+
+  <section class="card u" id="form">
+    <h2>ข้อมูลนักศึกษา</h2>
+    <p class="sub">กรอกให้ตรงตามบัตรประชาชน ระบบจะใช้ชื่อนี้ค้นหาตอนแจ้งชำระเงิน</p>
+
+    <label for="title">คำนำหน้า</label>
+    <select id="title">
+      <option>นาย</option><option>นาง</option><option>นางสาว</option><option>อื่น ๆ</option>
+    </select>
+
+    <label for="name">ชื่อ-นามสกุล</label>
+    <input id="name" placeholder="สมปอง ดีใจ" autocomplete="name">
+
+    <label for="phone">เบอร์โทรศัพท์</label>
+    <input id="phone" type="tel" inputmode="numeric" maxlength="10" placeholder="0812345678" autocomplete="tel">
+
+    <label for="level">ระดับการศึกษา</label>
+    <select id="level"><option value="">— เลือกระดับ —</option></select>
+
+    <label for="faculty">คณะ</label>
+    <select id="faculty" disabled><option value="">— เลือกระดับก่อน —</option></select>
+
+    <label for="major">สาขาวิชา</label>
+    <select id="major" disabled><option value="">— เลือกคณะก่อน —</option></select>
+
+    <label for="batch">รุ่น</label>
+    <select id="batch"><option value="">— เลือกรุ่น —</option></select>
+
+    <label for="year">ปีการศึกษาที่เข้า</label>
+    <input id="year" type="number" inputmode="numeric">
+
+    <div id="feeBox" class="hide">
+      <div class="note" style="background:#FFF4E2;color:#9A5B00">
+        <b>ยอดค่าเทอมเหมาจ่ายทั้งหลักสูตร</b><br>
+        <span id="feeText" style="font-size:20px;font-weight:700"></span>
+      </div>
+    </div>
+
+    <label for="sid">รหัสนักศึกษา <span class="opt">(เว้นว่างถ้ายังไม่ได้รับ)</span></label>
+    <input id="sid" placeholder="ยังไม่ได้รับรหัส — เว้นว่างไว้" autocomplete="off">
+
+    <button class="btn" id="bSave">ลงทะเบียน</button>
+    <div class="note">
+      ถ้าเว้นช่องรหัสนักศึกษาไว้ ระบบจะออกรหัสชั่วคราวให้ก่อน
+      เมื่อได้รหัสจริงแล้วมาผูกได้ที่หน้า <a href="linkid.html">เพิ่มรหัสนักศึกษา</a>
+    </div>
+  </section>
+
+  <section class="card u hide" id="done">
+    <h2>ลงทะเบียนสำเร็จ</h2>
+    <p class="sub">ข้อมูลถูกบันทึกเข้าระบบแล้ว</p>
+    <div id="result"></div>
+    <div class="btnrow">
+      <a class="btn alt" href="pay.html" style="text-decoration:none">แจ้งชำระเงิน</a>
+      <a class="btn ghost" href="./" style="text-decoration:none">กลับหน้าแรก</a>
+    </div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+<script>
+var FEES = [];
+
+$("year").value = new Date().getFullYear() + 543;
+
+/* ---------- โหลดหลักสูตรและรุ่นจากชีท ---------- */
+Promise.all([api("fees", {}), api("batches", {})]).then(function (res) {
+  var f = res[0], b = res[1];
+
+  if (f && f.success) {
+    FEES = f.fees || [];
+    var levels = [];
+    FEES.forEach(function (x) { if (levels.indexOf(x.level) === -1) levels.push(x.level); });
+    $("level").innerHTML = '<option value="">— เลือกระดับ —</option>' +
+      levels.map(function (l) { return '<option>' + esc(l) + '</option>'; }).join("");
+  } else {
+    say("โหลดรายการหลักสูตรไม่สำเร็จ กรุณารีเฟรชหน้านี้");
+  }
+
+  if (b && b.success) {
+    $("batch").innerHTML = '<option value="">— เลือกรุ่น —</option>' +
+      (b.batches || []).map(function (x) { return '<option>' + esc(x) + '</option>'; }).join("");
+  }
+});
+
+/* ---------- ระดับ -> คณะ -> สาขา -> ยอดค่าเทอม ---------- */
+$("level").addEventListener("change", function () {
+  var lv = this.value;
+  var facs = [];
+  FEES.forEach(function (x) { if (x.level === lv && facs.indexOf(x.fac) === -1) facs.push(x.fac); });
+
+  $("faculty").innerHTML = '<option value="">— เลือกคณะ —</option>' +
+    facs.map(function (x) { return '<option>' + esc(x) + '</option>'; }).join("");
+  $("faculty").disabled = !lv;
+  $("major").innerHTML = '<option value="">— เลือกคณะก่อน —</option>';
+  $("major").disabled = true;
+  $("feeBox").classList.add("hide");
+});
+
+$("faculty").addEventListener("change", function () {
+  var lv = $("level").value, fac = this.value;
+  var majors = FEES.filter(function (x) { return x.level === lv && x.fac === fac; });
+
+  $("major").innerHTML = '<option value="">— เลือกสาขา —</option>' +
+    majors.map(function (x) { return '<option value="' + esc(x.major) + '">' + esc(x.major) + '</option>'; }).join("");
+  $("major").disabled = !fac;
+  $("feeBox").classList.add("hide");
+});
+
+$("major").addEventListener("change", function () {
+  var m = currentFee();
+  if (m) {
+    $("feeText").textContent = baht(m.amount) + " บาท";
+    $("feeBox").classList.remove("hide");
+  } else {
+    $("feeBox").classList.add("hide");
+  }
+});
+
+function currentFee() {
+  var lv = $("level").value, fac = $("faculty").value, mj = $("major").value;
+  if (!lv || !fac || !mj) return null;
+  return FEES.filter(function (x) { return x.level === lv && x.fac === fac && x.major === mj; })[0] || null;
+}
+
+/* ---------- บันทึก ---------- */
+$("bSave").addEventListener("click", function () {
+  clearSay();
+  var name = $("name").value.trim().replace(/\s+/g, " ");
+  var phone = $("phone").value.replace(/\D/g, "");
+  var fee = currentFee();
+  var batch = $("batch").value;
+  var sid = $("sid").value.trim();
+
+  if (name.split(" ").length < 2) return say("กรุณากรอกทั้งชื่อและนามสกุล");
+  if (phone.length !== 10) return say("กรุณากรอกเบอร์โทรศัพท์ 10 หลัก");
+  if (!fee) return say("กรุณาเลือกระดับการศึกษา คณะ และสาขาให้ครบ");
+  if (!batch) return say("กรุณาเลือกรุ่น");
+
+  var btn = this;
+  busy(btn, true, "กำลังบันทึก…");
+
+  api("register", {
+    studentId: sid || "PENDING",
+    title: $("title").value,
+    name: name,
+    phone: phone,
+    year: $("year").value,
+    faculty: fee.fac,
+    major: fee.major,
+    batch: batch,
+    total: fee.amount
+  }).then(function (r) {
+    busy(btn, false);
+    if (!r.success) return say(r.message || "ลงทะเบียนไม่สำเร็จ");
+
+    var pending = /^pending(-|$)/i.test(String(r.studentId || ""));
+    $("result").innerHTML =
+      '<div class="kv"><span>ชื่อ-นามสกุล</span><b>' + esc($("title").value + " " + name) + '</b></div>' +
+      '<div class="kv"><span>รหัสนักศึกษา</span><b>' + esc(r.studentId) + '</b></div>' +
+      '<div class="kv"><span>คณะ / สาขา</span><b>' + esc(fee.fac) + '<br>' + esc(fee.major) + '</b></div>' +
+      '<div class="kv"><span>รุ่น</span><b>' + esc(batch) + '</b></div>' +
+      '<div class="kv"><span>ยอดค่าเทอมทั้งหลักสูตร</span><b class="big">' + baht(fee.amount) + ' บาท</b></div>' +
+      (pending ? '<div class="note">นี่คือรหัสชั่วคราว เมื่อได้รหัสนักศึกษาจริงแล้วมาผูกที่หน้า "เพิ่มรหัสนักศึกษา" ประวัติการชำระเงินจะย้ายตามไปให้เอง</div>' : "");
+
+    $("form").classList.add("hide");
+    $("done").classList.remove("hide");
+    say(r.message || "ลงทะเบียนสำเร็จ", 1);
+  });
+});
+</script>
+</body>
+</html>
