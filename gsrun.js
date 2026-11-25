@@ -1,3 +1,11 @@
+/* โหลดธีมกลางให้หน้านี้ใช้สีชุดเดียวกับ index.html โดยไม่ต้องแก้ app.html */
+(function () {
+  var l = document.createElement("link");
+  l.rel = "stylesheet";
+  l.href = "theme.css";
+  document.head.appendChild(l);
+})();
+
 /* gsrun.js - bridge replacing google.script.run
    lets app.html run on GitHub Pages without changing the app code */
 (function () {
@@ -48,14 +56,14 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-/* ====== เปิดตรงขั้นที่ต้องการด้วย ?step=reg|link|pay|balance ======
+/* ====== เปิดตรงขั้นที่ต้องการด้วย ?step=reg|link|pay|balance|admin ======
    ปุ่มในหน้าแรกชี้มาที่ไฟล์เด้ง ซึ่งแนบค่า step มาให้แล้ว
    สคริปต์ของแอปโหลดทีหลัง จึงต้องรอจน switchTab พร้อมก่อนจึงสั่งสลับ
    และต้องยกเลิกทันทีที่ผู้ใช้แตะอะไรก็ตาม ไม่งั้นจะไปสลับทับสิ่งที่ผู้ใช้เพิ่งกด
    (เช่น กด Admin แล้วโดนเด้งกลับไปหน้าส่งสลิป) */
 document.addEventListener("DOMContentLoaded", function () {
   var step = new URLSearchParams(location.search).get("step");
-  var allow = { reg: 1, link: 1, pay: 1, balance: 1 };
+  var allow = { reg: 1, link: 1, pay: 1, balance: 1, admin: 1 };
   if (!step || !allow[step]) return;
 
   var cancelled = false;
