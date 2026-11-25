@@ -65,9 +65,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 /* ====== เปิดตรงขั้นที่ต้องการด้วย ?step=reg|link|pay|balance|admin ======
    ปุ่มในหน้าแรกชี้มาที่ไฟล์เด้ง ซึ่งแนบค่า step มาให้แล้ว
-   สคริปต์ของแอปโหลดทีหลัง จึงต้องรอจน switchTab พร้อมก่อนจึงสั่งสลับ
-   และต้องยกเลิกทันทีที่ผู้ใช้แตะอะไรก็ตาม ไม่งั้นจะไปสลับทับสิ่งที่ผู้ใช้เพิ่งกด
-   (เช่น กด Admin แล้วโดนเด้งกลับไปหน้าส่งสลิป) */
+   - สั่งสลับครั้งแรกทันทีที่ switchTab พร้อม เพื่อให้เห็นเนื้อหาที่ถูกต้องเร็วที่สุด
+   - สั่งซ้ำอีกครั้งหลังแอปโหลดเสร็จ เพราะ window.onload ของแอปรีเซ็ตแถบตัวเลขกลับไปขั้นที่ 1
+   - ยกเลิกทันทีที่ผู้ใช้แตะหรือกดคีย์ ไม่งั้นจะไปสลับทับสิ่งที่ผู้ใช้เพิ่งกด */
 document.addEventListener("DOMContentLoaded", function () {
   var step = new URLSearchParams(location.search).get("step");
   var allow = { reg: 1, link: 1, pay: 1, balance: 1, admin: 1 };
@@ -82,19 +82,26 @@ document.addEventListener("DOMContentLoaded", function () {
     document.removeEventListener("pointerdown", stop, true);
     document.removeEventListener("keydown", stop, true);
   }
-
-  // ผู้ใช้แตะหรือกดคีย์เมื่อไหร่ ถือว่าเขาเลือกเองแล้ว เลิกสลับอัตโนมัติ
   document.addEventListener("pointerdown", stop, true);
   document.addEventListener("keydown", stop, true);
 
+  function go() {
+    if (cancelled || typeof switchTab !== "function") return false;
+    switchTab(step);
+    return true;
+  }
+
+  // ครั้งแรก: รอจน switchTab พร้อม
   var tries = 0;
   timer = setInterval(function () {
     if (cancelled) return;
-    if (typeof switchTab === "function") {
-      stop();
-      switchTab(step);
-    } else if (++tries > 60) {
-      stop();
-    }
+    if (go() || ++tries > 60) { clearInterval(timer); timer = null; }
   }, 30);
+
+  // ครั้งที่สอง: หลัง window.onload ของแอปทำงานเสร็จ
+  function afterLoad() {
+    setTimeout(function () { if (go()) stop(); }, 0);
+  }
+  if (document.readyState === "complete") afterLoad();
+  else window.addEventListener("load", afterLoad);
 });

@@ -84,3 +84,131 @@ body { background: var(--ptu-bg) !important; color: var(--ptu-text) !important; 
 
 /* ---------- เมนูที่เลือกอยู่ ---------- */
 .nav-active { background-color: #EDF2F9 !important; color: var(--ptu-blue) !important; }
+
+/* ============================================================
+ *  เต็มหน้าจอ + ตัวอักษรใหญ่ อ่านง่ายสำหรับผู้สูงอายุ
+ *  ใช้เฉพาะการแสดงบนจอ (@media screen) ไม่กระทบการสั่งพิมพ์
+ *  ไม่ใช้ zoom เพราะทำให้ html2canvas จับภาพใบเสร็จเพี้ยน
+ *
+ *  ขนาดตัวอักษร        ฐาน     เล็กสุด
+ *    มือถือ            19px    15px
+ *    จอคอม (≥1000px)   20px    16px
+ *    จอใหญ่ (≥1600px)  22px    16px
+ * ============================================================ */
+@media screen {
+
+  :root { --gutter: clamp(12px, 4vw, 64px); }
+  html  { font-size: 118.75%; }                        /* 19px */
+
+  /* ---------- เต็มจอ ---------- */
+  main  { max-width: none !important; width: 100% !important;
+          padding-left: var(--gutter) !important; padding-right: var(--gutter) !important; }
+  header, footer { padding-left: var(--gutter) !important; padding-right: var(--gutter) !important; }
+  .wrap { max-width: none !important; width: 100% !important;
+          padding-left: var(--gutter) !important; padding-right: var(--gutter) !important; }
+  .max-w-7xl, .max-w-4xl, .max-w-3xl, .max-w-2xl { max-width: none !important; }
+  .max-w-7xl { padding-left: var(--gutter) !important; padding-right: var(--gutter) !important;
+               box-sizing: border-box !important; }
+
+  /* ---------- app.html: แถบบน ไม่ให้ดันปุ่มออกนอกจอ ---------- */
+  nav .cursor-pointer.min-w-0 { flex-shrink: 1 !important; }
+  div:has(> .text-8xl.pointer-events-none) { overflow: hidden !important; }
+
+  /* ---------- app.html: ตัวอักษรเล็ก ---------- */
+  .text-\[8px\], .text-\[9px\], .text-\[10px\],
+  .text-\[11px\], .text-\[12px\], .text-\[13px\] { font-size: 15px !important; }
+  .text-xs    { font-size: 15px !important; }
+  .text-sm    { font-size: 16.5px !important; }
+  .step-label { font-size: 15px !important; line-height: 1.3 !important; }
+
+  /* ---------- โลโก้ตรามหาวิทยาลัย: ครอปให้เต็มวง ---------- */
+  header .brand img { object-fit: cover !important; padding: 0 !important;
+                      width: 46px !important; height: 46px !important; }
+
+  /* ---------- index.html ---------- */
+  .brand span { font-size: 18px !important; }
+  .admin      { font-size: 17px !important; }
+  .hero h1    { font-size: 30px !important; }
+  .step b     { font-size: 15px !important; }
+  .step em    { font-size: 16.5px !important; }
+  .badge      { font-size: 18px !important; }
+  .lead h2    { font-size: 26px !important; }
+  .lead p     { font-size: 17.5px !important; }
+  .tile .tx b { font-size: 23px !important; }
+  .row .tx b  { font-size: 20px !important; }
+  .tx span    { font-size: 17px !important; }
+  .sect b     { font-size: 17px !important; }
+  footer b    { font-size: 16px !important; }
+  footer span { font-size: 15px !important; }
+
+  /* ---------- docs.html ---------- */
+  header b                 { font-size: 19px !important; color: #fff !important; }
+  header small             { font-size: 16px !important; }
+  header a[href="index.html"]:not([title]), header button { font-size: 16.5px !important; }
+  .wrap h1                 { font-size: 26px !important; }
+  .wrap label              { font-size: 17.5px !important; }
+  .wrap input, .wrap select, .wrap textarea { font-size: 19px !important; }
+  .wrap button             { font-size: 19px !important; }
+  .wrap button.sm          { font-size: 17px !important; }
+  .wrap .mute, .wrap .note { font-size: 17px !important; }
+  .wrap .chip              { font-size: 15px !important; }
+  .wrap table              { font-size: 17px !important; }
+  .wrap th                 { font-size: 16px !important; }
+  .wrap .msg, .msg         { font-size: 17.5px !important; }
+  #vLogin                  { max-width: 680px; width: 100%; margin-left: auto; margin-right: auto; }
+}
+
+/* ---------- มือถือ: ลดขอบในการ์ดที่กว้างเกิน ให้เนื้อหาได้พื้นที่มากขึ้น ---------- */
+@media screen and (max-width: 639px) {
+  .p-6, .p-8 { padding: 16px !important; }
+  .px-6      { padding-left: 16px !important; padding-right: 16px !important; }
+  .card      { padding: 16px !important; }
+}
+
+/* ---------- จอคอม ---------- */
+@media screen and (min-width: 1000px) {
+  html { font-size: 125%; }                            /* 20px */
+
+  .text-\[8px\], .text-\[9px\], .text-\[10px\],
+  .text-\[11px\], .text-\[12px\], .text-\[13px\] { font-size: 16px !important; }
+  .text-xs    { font-size: 16px !important; }
+  .text-sm    { font-size: 17.5px !important; }
+  .step-label { font-size: 16px !important; }
+
+  header .brand img { width: 52px !important; height: 52px !important; }
+  .brand span { font-size: 19px !important; }
+  .admin      { font-size: 17px !important; }
+  .hero h1    { font-size: 42px !important; }
+  .step em    { font-size: 18px !important; }
+  .step b     { font-size: 16px !important; }
+  .badge      { font-size: 19px !important; }
+  .lead h2    { font-size: 34px !important; }
+  .lead p     { font-size: 19px !important; }
+  .duo .tile .tx b    { font-size: 28px !important; }
+  .duo .tile .tx span { font-size: 19px !important; }
+  .trio .row .tx b    { font-size: 21px !important; }
+  .tx span    { font-size: 17.5px !important; }
+  .sect b     { font-size: 19px !important; }
+  footer span { font-size: 16px !important; }
+
+  header b                 { font-size: 21px !important; }
+  header a[href="index.html"]:not([title]), header button { font-size: 17px !important; }
+  .wrap h1                 { font-size: 30px !important; }
+  .wrap label              { font-size: 19px !important; }
+  .wrap input, .wrap select, .wrap textarea { font-size: 20px !important; }
+  .wrap button             { font-size: 20px !important; }
+  .wrap .mute, .wrap .note { font-size: 18px !important; }
+  .wrap .chip              { font-size: 16px !important; }
+  .wrap table              { font-size: 18px !important; }
+  .wrap th                 { font-size: 17px !important; }
+  .wrap .msg, .msg         { font-size: 18px !important; }
+
+  /* docs.html หลังเข้าสู่ระบบ: ส่งเอกสารใหม่ กับ รายการที่ส่งแล้ว อยู่ข้างกัน */
+  #vDocs:not(.hide) { display: grid !important; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 16px; }
+  #vDocs > .card:first-child { grid-column: 1 / -1; }
+}
+
+/* ---------- จอใหญ่ ---------- */
+@media screen and (min-width: 1600px) {
+  html { font-size: 137.5%; }                          /* 22px */
+}
