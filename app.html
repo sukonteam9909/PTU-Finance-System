@@ -362,13 +362,9 @@
           <!-- 4. TRANSFER BANK, AMOUNT & DATE -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-4">
             <div class="space-y-1.5">
-              <label class="text-xs font-black text-slate-500 uppercase tracking-wider">ธนาคารที่โอนเข้า *</label>
-              <select id="pay_bank" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 font-bold text-blue-950 outline-none focus:ring-2 focus:ring-blue-800 text-sm">
-                <option value="กสิกรไทย (KBank)">ธนาคารกสิกรไทย (KBank)</option>
-                <option value="ไทยพาณิชย์ (SCB)">ธนาคารไทยพาณิชย์ (SCB)</option>
-                <option value="กรุงไทย (KTB)">ธนาคารกรุงไทย (KTB)</option>
-                <option value="ออมสิน (GSB)">ธนาคารออมสิน (GSB)</option>
-                <option value="กรุงเทพ (BBL)">ธนาคารกรุงเทพ (BBL)</option>
+              <label class="text-xs font-black text-slate-500 uppercase tracking-wider">ธนาคารที่โอนเข้า * <span class="normal-case tracking-normal text-blue-900">ชื่อบัญชี : นางสาวสุคนธ์ บุญมาก</span></label>
+              <select id="pay_bank" disabled class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 font-bold text-blue-950 disabled:opacity-60 outline-none focus:ring-2 focus:ring-blue-800 text-sm">
+                <option value="">-- เลือกคณะก่อน --</option>
               </select>
             </div>
 
@@ -1217,6 +1213,7 @@
       facSel.innerHTML = '<option value="">-- เลือกคณะ --</option>';
       majorSel.innerHTML = '<option value="">-- เลือกสาขาวิชา --</option>';
       majorSel.disabled = true;
+      updatePayBanks();
 
       if (!selectedLevel) {
         facSel.disabled = true;
@@ -1236,12 +1233,38 @@
       });
     }
 
+    // --- บัญชีธนาคารที่โอนเข้า แยกตามคณะ (ชื่อบัญชี: นางสาวสุคนธ์ บุญมาก) ---
+    const BANK_ACCOUNTS = {
+      "รัฐศาสตร์":   ["TMB (ทีทีบี) 457-2-33001-9"],
+      "บริหารธุรกิจ": ["ธนาคารกรุงเทพ 637-019088-3"],
+      "นิติศาสตร์":   ["ธนาคารออมสิน 050-4-0160010-6", "ธนาคารกสิกรไทย 181-183141-3"]
+    };
+
+    function updatePayBanks() {
+      const fac = document.getElementById('pay_fac').value || '';
+      const sel = document.getElementById('pay_bank');
+      const key = Object.keys(BANK_ACCOUNTS).find(k => fac.includes(k));
+      // คณะที่ยังไม่กำหนดบัญชี → แสดงทุกบัญชีให้เลือก
+      const list = key ? BANK_ACCOUNTS[key] : [].concat(...Object.values(BANK_ACCOUNTS));
+
+      if (!fac) {
+        sel.innerHTML = '<option value="">-- เลือกคณะก่อน --</option>';
+        sel.disabled = true;
+        return;
+      }
+      sel.innerHTML = (list.length > 1 ? '<option value="">-- เลือกธนาคารที่โอนเข้า --</option>' : '') +
+        list.map(b => `<option value="${b}">${b}</option>`).join('');
+      sel.disabled = false;
+      if (list.length === 1) sel.value = list[0];
+    }
+
     function updatePayMajors() {
       const selectedLevel = document.getElementById('pay_level').value;
       const selectedFac = document.getElementById('pay_fac').value;
       const majorSel = document.getElementById('pay_major');
 
       majorSel.innerHTML = '<option value="">-- เลือกสาขาวิชา --</option>';
+      updatePayBanks();
 
       if (!selectedLevel || !selectedFac) {
         majorSel.disabled = true;
@@ -1684,6 +1707,7 @@
       if (!phone) return showToast("กรุณากรอกเบอร์โทรศัพท์", "error");
       if (!level || !fac || !major) return showToast("กรุณาเลือกระดับการศึกษา คณะ และสาขา", "error");
       if (!batch) return showToast("กรุณาเลือกรุ่นที่เข้าศึกษา", "error");
+      if (!bank) return showToast("กรุณาเลือกธนาคารที่โอนเข้า", "error");
       if (!transferDate) return showToast("กรุณาระบุวัน/เดือน/ปี ที่โอนเงิน", "error");
       if (!amount || amount <= 0) return showToast("กรุณาระบุยอดเงินที่โอนจริง", "error");
       if (!uploadedSlips[0]) return showToast("กรุณาแนบภาพสลิปใบที่ 1 เป็นอย่างน้อย", "error");
@@ -1747,6 +1771,7 @@
           document.getElementById('pay_fac').disabled = true;
           document.getElementById('pay_major').innerHTML = '<option value="">-- เลือกคณะก่อน --</option>';
           document.getElementById('pay_major').disabled = true;
+          updatePayBanks();
           document.getElementById('pay_batch').value = '';
           document.getElementById('matched_student_badge').classList.add('hidden');
 
@@ -2762,6 +2787,19 @@
       renderAdminStudents();
       updateStepIndicator('reg');
     };
+
+    // เปิดแท็บตามปุ่มที่กดมาจากหน้าหลัก (?m=pay/register/linkid/check/admin) — แยกอิสระ ไม่ขึ้นกับ onload
+    window.addEventListener('load', function() {
+      var map = { pay: 'pay', register: 'reg', linkid: 'link', check: 'balance', admin: 'admin' };
+      function go(m) { if (map[m]) { switchTab(map[m]); setTimeout(function(){ switchTab(map[m]); }, 1200); } }
+      try {
+        if (typeof google !== 'undefined' && google.script && google.script.url) {
+          google.script.url.getLocation(function(loc) { go((loc && loc.parameter && loc.parameter.m) || ''); });
+        } else {
+          go(new URLSearchParams(location.search).get('m') || '');
+        }
+      } catch (err) { console.error('route', err); }
+    });
   </script>
 
   <!-- PRINT-ONLY AREA: ใช้ตอนกด "พิมพ์เอกสาร" เท่านั้น (คัดลอกเนื้อหาใบเสร็จมาไว้ที่นี่ก่อนสั่งพิมพ์) -->
